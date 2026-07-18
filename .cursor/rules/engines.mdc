@@ -1,0 +1,33 @@
+---
+description: Motores RSVP, Bionic, tokenizer, capítulos y parsers
+globs: src/engines/**/*,src/parsers/**/*,src/workers/**/*,src/utils/chapter-offsets.ts,src/utils/color-theme.ts
+alwaysApply: false
+---
+
+# Motores, capítulos y parsers
+
+## Capítulos (crítico)
+
+- `computeChapterOffsets(chapters)` en `utils/chapter-offsets.ts` — tokeniza prefijos con `\n\n` como `fullText`.
+- Scroll (`TraditionalView`) usa `tokens.slice(chapterStart, chapterEnd)` — mismos índices que RSVP.
+- No overlay manual de capítulo en UI además de `RSVPEngine.onChapterTitle`.
+
+## RSVPEngine
+
+- `shownChapterOffsets` — no repetir tarjeta al pausar/reanudar.
+- `continueAfterChapterTitle()` — siempre retoma (`playing = true`).
+- `loadTokens()` — limpia memoria de capítulos solo al **saltar** de posición.
+- Tarjeta solo para capítulo i > 0 en offset exacto.
+
+## ePub
+
+```typescript
+const section = book.spine.get(i);
+```
+
+Títulos duplicados en TOC → sufijo `· N` en parser.
+
+## Tokenizer
+
+- >30k chars → Web Worker.
+- Índices compartidos entre scroll y RSVP.

@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+@theme {
+  --font-ui: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-reading: Georgia, "Times New Roman", Literata, serif;
+  --font-mono: ui-monospace, monospace;
+  --color-reader-bg: #0a0a09;
+  --color-reader-surface: #242422;
+  --color-reader-text: #f4f4f5;
+  --color-reader-muted: #828289;
+  --color-reader-accent: #e85d4c;
+  --color-reader-orp: #e85d4c;
+  --color-reader-border: rgba(255, 255, 255, 0.1);
+  --radius-ot-sm: 6px;
+  --radius-ot: 9px;
+  --radius-ot-lg: 13px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  background: var(--color-reader-bg);
+  color: var(--color-reader-text);
+}
+
+body.theme-dark {
+  --color-reader-bg: #0a0a09;
+  --color-reader-surface: #242422;
+  --color-reader-text: #f4f4f5;
+  --color-reader-muted: #828289;
+  --color-reader-border: rgba(255, 255, 255, 0.1);
+}
+
+body.theme-sepia {
+  --color-reader-bg: #f4ecd8;
+  --color-reader-surface: #ebe3cf;
+  --color-reader-text: #3d3428;
+  --color-reader-muted: #7a6f5f;
+  --color-reader-border: rgba(61, 52, 40, 0.12);
+}
+
+body.theme-light {
+  --color-reader-bg: #faf9f7;
+  --color-reader-surface: #f0eeeb;
+  --color-reader-text: #1a1a1e;
+  --color-reader-muted: #6b6560;
+  --color-reader-border: rgba(0, 0, 0, 0.08);
+}
+
+body.theme-paper {
+  --color-reader-bg: #f3ead8;
+  --color-reader-surface: #fffdf8;
+  --color-reader-text: #2c261c;
+  --color-reader-muted: #7a6f5f;
+  --color-reader-border: rgba(44, 38, 28, 0.14);
+  --color-reader-accent: #b45309;
+}
+
+.reading-text {
+  font-family: var(--font-reading);
+}
+
+.reader-grid-bg {
+  background-color: var(--color-reader-bg);
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 28%);
+  background-size: 18px 18px, 100% 100%;
+}
+
+body.theme-light .reader-grid-bg,
+body.theme-sepia .reader-grid-bg {
+  background-image:
+    radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 28%);
+}
+
+body.theme-paper .reader-grid-bg {
+  background-image:
+    radial-gradient(rgba(120, 90, 50, 0.06) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 252, 245, 0.9), rgba(243, 234, 216, 0.4) 40%, transparent 70%),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(120, 90, 50, 0.015) 2px,
+      rgba(120, 90, 50, 0.015) 3px
+    );
+  background-size: 20px 20px, 100% 100%, 8px 100%;
+}
+
+.ot-panel {
+  border: 1px solid var(--color-reader-border);
+  border-radius: var(--radius-ot-lg);
+  background: color-mix(in srgb, var(--color-reader-surface) 88%, transparent);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.ot-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-ot-sm);
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.ot-btn:active {
+  transform: scale(0.96);
+}
+
+.ot-btn-primary {
+  background: var(--color-reader-accent);
+  color: white;
+}
+
+.ot-btn-ghost {
+  border: 1px solid var(--color-reader-border);
+  background: color-mix(in srgb, var(--color-reader-surface) 60%, transparent);
+  color: var(--color-reader-text);
+}
+
+.ot-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-reader-muted);
+}
+
+.word-anchor {
+  font-family: var(--font-reading);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.word-padding {
+  visibility: hidden;
+  user-select: none;
+}
+
+select option {
+  background: var(--color-reader-surface);
+  color: var(--color-reader-text);
+}
+
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.safe-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}

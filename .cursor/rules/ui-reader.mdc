@@ -1,0 +1,45 @@
+---
+description: Componentes React del lector, biblioteca y estilos
+globs: src/components/**/*,src/index.css,src/App.tsx,src/utils/color-theme.ts,src/data/**/*
+alwaysApply: false
+---
+
+# UI y lector
+
+## Biblioteca (`LibraryView`)
+
+- «Leyendo ahora» con portada grande + progreso.
+- Rejilla de portadas estilo Apple Books (2–5 cols).
+- Barra de progreso en cubierta si hay avance.
+
+## ReaderView
+
+- Botón Biblioteca fijo en cabecera.
+- ControlBar: 2 filas (layout+modo; transport+WPM en RSVP).
+- Effects de play: **sin** `engine.pause()` en cleanup cuando hay `chapterOverlay`.
+- `startRsvpFromWord` desde TraditionalView al pulsar lectura rápida.
+
+## WordDisplay
+
+- Modos RSVP / Híbrido / Bionic.
+- Si `preferences.wordColorNames`: `getColorForWord(token.text)` → `style.color`.
+- Etiqueta opcional bajo palabra (`showWordColorNames`): `nombre · #hex`.
+- Con colores activos, ORP usa el color de la palabra (no `orpColor` salvo desactivado).
+
+## TraditionalView
+
+- Render desde `tokens[]` global (slice por capítulo).
+- Palabras clicables + FAB «Lectura rápida desde aquí».
+- `wordColorNames`: color por `<span>`; `title` con nombre del color.
+- Auto-scroll solo al cambiar capítulo.
+- Ocultar `<h2>` si el texto ya repite el título.
+
+## Ajustes (`SettingsDrawer`)
+
+- Tema de interfaz: `dark`, `paper`, `sepia`, `light` (no tema custom de fondo).
+- «Colorear palabras con colornames» + «Mostrar nombre del color».
+
+## Estética
+
+- Tokens `--color-reader-*` = **interfaz** (fondo, paneles, chrome).
+- Colores de palabras = inline `style.color` desde `color-theme.ts`, no variables CSS del tema.
