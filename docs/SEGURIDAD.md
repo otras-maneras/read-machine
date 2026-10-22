@@ -6,17 +6,16 @@ SPA estática; datos en el cliente. Sin API ni DB en servidor.
 
 | Riesgo | Mitigación |
 |--------|------------|
-| Acceso no autorizado | HTTP Basic Auth (Caddy) |
+| Acceso | Público desde 2026-10-23 (sin Basic Auth): no hay datos en el servidor |
 | Tránsito | HTTPS (Let's Encrypt) |
 | Secretos en repo | `.auth-credentials` en `.gitignore` |
 | XSS en contenido | Texto a plain; sin `dangerouslySetInnerHTML` en lectura |
 
-## Basic Auth
+## Acceso público
 
-- Usuario: `lector`
-- Contraseña: solo en `/home/apps/lector/lector-app/.auth-credentials` (servidor)
-- Protege **toda** la ruta incluido assets y manifest
-- Uso personal/cerrado — no multi-usuario
+Desde 2026-10-23 el sitio es público (se quitó el Basic Auth de Caddy). El servidor solo sirve
+archivos estáticos: la app y los libros de dominio público de `public/libros/`. Lo que cada
+persona importa queda en su navegador.
 
 ## No commitear
 

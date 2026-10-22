@@ -2,7 +2,7 @@
 
 Webapp de lectura rápida: **RSVP**, **Bionic**, **Híbrido**, **scroll**, importación **ePub/PDF/TXT** y biblioteca offline.
 
-**Producción:** https://read.otrasmaneras.com (Basic Auth — credenciales en `.auth-credentials` del servidor)
+**Producción:** https://reader.280642.xyz (público, sin clave)
 
 ## Características
 
@@ -10,6 +10,7 @@ Webapp de lectura rápida: **RSVP**, **Bionic**, **Híbrido**, **scroll**, impor
 - Scroll: palabras clicables → **«Lectura rápida desde aquí»** (salta a RSVP)
 - Importación ePub, PDF, TXT, MD y texto pegado
 - Biblioteca local (IndexedDB): progreso, marcadores, estadísticas, portadas
+- **Biblioteca abierta:** clásicos en español de dominio público en `public/libros/` (`catalogo.json` + ePub + portadas); se abren con un clic y quedan en la biblioteca local
 - Biblioteca UI estilo Apple Books («Leyendo ahora» + rejilla de portadas)
 - PWA instalable, sin backend
 - Temas de interfaz: oscuro, papel, sepia, claro

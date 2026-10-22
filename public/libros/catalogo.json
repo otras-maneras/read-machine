@@ -1,0 +1,44 @@
+[
+  {
+    "id": "don-quijote",
+    "title": "Don Quijote",
+    "author": "Miguel de Cervantes",
+    "year": "1605",
+    "file": "don-quijote.epub"
+  },
+  {
+    "id": "lazarillo-de-tormes",
+    "title": "Lazarillo de Tormes",
+    "author": "Anónimo",
+    "year": "1554",
+    "file": "lazarillo-de-tormes.epub"
+  },
+  {
+    "id": "azul-ruben-dario",
+    "title": "Azul...",
+    "author": "Rubén Darío",
+    "year": "1888",
+    "file": "azul-ruben-dario.epub"
+  },
+  {
+    "id": "cuentos-de-amor-pardo-bazan",
+    "title": "Cuentos de amor",
+    "author": "Emilia Pardo Bazán",
+    "year": "1898",
+    "file": "cuentos-de-amor-pardo-bazan.epub"
+  },
+  {
+    "id": "niebla-unamuno",
+    "title": "Niebla",
+    "author": "Miguel de Unamuno",
+    "year": "1914",
+    "file": "niebla-unamuno.epub"
+  },
+  {
+    "id": "cuentos-de-amor-locura-y-muerte-quiroga",
+    "title": "Cuentos de amor de locura y de muerte",
+    "author": "Horacio Quiroga",
+    "year": "1917",
+    "file": "cuentos-de-amor-locura-y-muerte-quiroga.epub"
+  }
+]
