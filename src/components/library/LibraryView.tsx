@@ -3,6 +3,13 @@ import type { BookRecord } from '../../engines/types';
 import { tokenize, countWords } from '../../engines/tokenizer';
 import { useReaderStore } from '../../stores/reader-store';
 import {
+  type CatalogBook,
+  catalogBookId,
+  catalogCoverUrl,
+  fetchCatalogBook,
+  loadCatalog,
+} from '../../services/catalog';
+import {
   estimateReadingSeconds,
   formatDuration,
   formatProgressPercent,
@@ -122,14 +129,74 @@ function BookGridCard({
   );
 }
 
+function CatalogCard({
+  book,
+  opening,
+  onOpen,
+}: {
+  book: CatalogBook;
+  opening: boolean;
+  onOpen: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      disabled={opening}
+      className="flex w-full flex-col text-left transition-transform active:scale-[0.98] disabled:opacity-60"
+    >
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-reader-surface shadow-lg shadow-black/40">
+        <img src={catalogCoverUrl(book)} alt="" loading="lazy" className="h-full w-full object-cover" />
+        {opening && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/55 text-xs font-bold text-white">
+            Abriendo…
+          </div>
+        )}
+      </div>
+      <h3 className="mt-2.5 line-clamp-2 text-sm font-bold leading-snug text-reader-text">
+        {book.title}
+      </h3>
+      <p className="mt-0.5 line-clamp-1 text-xs text-reader-muted">
+        {book.author} · {book.year}
+      </p>
+    </button>
+  );
+}
+
 export function LibraryView() {
-  const { books, resumeHint, preferences, loadBooks, openBook, setScreen, deleteBookById } =
-    useReaderStore();
+  const {
+    books,
+    resumeHint,
+    preferences,
+    loadBooks,
+    loadDocument,
+    openBook,
+    setScreen,
+    deleteBookById,
+  } = useReaderStore();
   const [loading, setLoading] = useState(true);
+  const [catalog, setCatalog] = useState<CatalogBook[]>([]);
+  const [opening, setOpening] = useState<string | null>(null);
+  const [catalogError, setCatalogError] = useState('');
 
   useEffect(() => {
     void loadBooks().finally(() => setLoading(false));
+    void loadCatalog().then(setCatalog);
   }, [loadBooks]);
+
+  // los del catálogo que ya se abrieron viven en la biblioteca, con su progreso
+  const openCatalog = catalog.filter((c) => !books.some((b) => b.id === catalogBookId(c)));
+
+  const openCatalogBook = async (book: CatalogBook) => {
+    setOpening(book.id);
+    setCatalogError('');
+    try {
+      await loadDocument(await fetchCatalogBook(book), { bookId: catalogBookId(book) });
+    } catch (e) {
+      setCatalogError(e instanceof Error ? e.message : 'No se pudo abrir el libro');
+      setOpening(null);
+    }
+  };
 
   const readingNowBook = resumeHint
     ? books.find((b) => b.id === resumeHint.bookId)
@@ -167,7 +234,7 @@ export function LibraryView() {
 
         {loading ? (
           <p className="py-16 text-center text-reader-muted">Cargando…</p>
-        ) : books.length === 0 ? (
+        ) : books.length === 0 && openCatalog.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
             <div className="text-5xl opacity-40">📚</div>
             <p className="text-reader-muted">Tu biblioteca está vacía</p>
@@ -242,10 +309,35 @@ export function LibraryView() {
               </section>
             )}
 
-            {resumeHint && shelfBooks.length === 0 && (
+            {resumeHint && shelfBooks.length === 0 && openCatalog.length === 0 && (
               <p className="text-center text-sm text-reader-muted">
                 Solo tienes este libro por ahora.
               </p>
+            )}
+
+            {openCatalog.length > 0 && (
+              <section>
+                <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-reader-muted">
+                  Biblioteca abierta
+                </h2>
+                <p className="mb-4 mt-1 text-xs text-reader-muted">
+                  Clásicos de dominio público, listos para leer.
+                </p>
+                {catalogError && (
+                  <p className="mb-4 text-sm text-reader-accent">{catalogError}</p>
+                )}
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                  {openCatalog.map((book) => (
+                    <li key={book.id}>
+                      <CatalogCard
+                        book={book}
+                        opening={opening === book.id}
+                        onOpen={() => void openCatalogBook(book)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
           </div>
         )}
