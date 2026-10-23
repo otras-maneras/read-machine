@@ -1,4 +1,4 @@
-# Lector
+# Read Machine (Lector)
 
 Webapp de lectura rápida: **RSVP**, **Bionic**, **Híbrido**, **scroll**, importación **ePub/PDF/TXT** y biblioteca offline.
 

@@ -129,7 +129,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   fontSize: 48,
   scrollFontSize: 20,
   bionicWordsPerChunk: 3,
-  orpColor: '#e85d4c',
+  orpColor: '#e5534b',
   enableSlowStart: true,
   bionicInScroll: true,
   wordColorNames: false,

@@ -41,8 +41,8 @@ import {
 export type AppScreen = 'library' | 'import' | 'reader';
 
 const THEME_COLORS: Record<Theme, string> = {
-  dark: '#0a0a09',
-  light: '#faf9f7',
+  dark: '#121214',
+  light: '#efeee9',
   sepia: '#f4ecd8',
   paper: '#f3ead8',
 };

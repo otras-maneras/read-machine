@@ -1,5 +1,7 @@
 import type { Bookmark } from '../../engines/types';
 import { useReaderStore } from '../../stores/reader-store';
+import { Icon } from '../ui/Icon';
+import { Sheet } from '../ui/Sheet';
 
 interface BookmarksPanelProps {
   open: boolean;
@@ -13,68 +15,49 @@ export function BookmarksPanel({ open, onClose }: BookmarksPanelProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-        aria-label="Cerrar marcadores"
-      />
-      <aside className="relative z-10 flex h-full w-full max-w-sm flex-col bg-reader-surface shadow-xl">
-        <header className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-          <h2 className="text-lg font-medium">Marcadores</h2>
-          <button type="button" onClick={onClose} className="text-reader-muted">
-            ✕
-          </button>
-        </header>
+    <Sheet title="Marcadores" onClose={onClose}>
+      <div className="flex flex-col gap-4 p-4 pb-8">
+        <button
+          type="button"
+          onClick={() => void addBookmark()}
+          className="rm-pill rm-pill-primary w-full"
+        >
+          <Icon name="bookmark" />
+          Marcar la palabra {(wordIndex + 1).toLocaleString()}
+        </button>
 
-        <div className="border-b border-white/10 p-4">
-          <button
-            type="button"
-            onClick={() => void addBookmark()}
-            className="w-full rounded-lg bg-reader-accent py-2 text-sm font-medium text-white hover:opacity-90"
-          >
-            + Marcar posición actual (palabra {wordIndex + 1})
-          </button>
-        </div>
-
-        <ul className="flex-1 overflow-y-auto p-4">
-          {bookmarks.length === 0 ? (
-            <li className="py-8 text-center text-sm text-reader-muted">
-              Sin marcadores todavía
-            </li>
-          ) : (
-            bookmarks.map((bm: Bookmark) => (
-              <li
-                key={bm.id}
-                className="mb-2 flex items-start gap-2 rounded-lg border border-white/10 p-3"
-              >
+        {bookmarks.length === 0 ? (
+          <p className="py-10 text-center text-sm text-reader-muted">Sin marcadores todavía</p>
+        ) : (
+          <ul className="rm-group">
+            {bookmarks.map((bm: Bookmark) => (
+              <li key={bm.id} className="rm-row items-start py-3">
                 <button
                   type="button"
                   onClick={() => {
                     jumpToBookmark(bm.id);
                     onClose();
                   }}
-                  className="flex-1 text-left"
+                  className="min-w-0 flex-1 text-left"
                 >
-                  <span className="block text-sm font-medium">{bm.label}</span>
-                  <span className="mt-1 line-clamp-2 text-xs text-reader-muted">
+                  <span className="block text-sm">{bm.label}</span>
+                  <span className="reading-text mt-1 line-clamp-2 text-xs text-reader-muted">
                     {bm.excerpt}
                   </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => void removeBookmark(bm.id)}
-                  className="shrink-0 text-reader-muted hover:text-reader-accent"
+                  className="rm-icon-btn -mr-2 -mt-1.5 h-8 w-8 text-reader-muted hover:text-reader-accent [&_svg]:h-4 [&_svg]:w-4"
                   aria-label="Eliminar marcador"
                 >
-                  ✕
+                  <Icon name="close" />
                 </button>
               </li>
-            ))
-          )}
-        </ul>
-      </aside>
-    </div>
+            ))}
+          </ul>
+        )}
+      </div>
+    </Sheet>
   );
 }
