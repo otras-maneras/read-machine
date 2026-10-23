@@ -70,9 +70,9 @@ Ver trampas en [CONTINUACION.md](CONTINUACION.md#sistema-de-capítulos-leer-ante
 
 Ver [MODOS-LECTURA.md](MODOS-LECTURA.md).
 
-## Colores por palabra (colornames)
+## Colores por palabra
 
-Integración opcional con nombres de color de [colornames.org](https://colornames.org/). **Solo afecta al texto de las palabras**, no al tema de la interfaz.
+Integración opcional con nombres de color de [color-name-list](https://github.com/meodai/color-name-list) (MIT, David Aerne). **Solo afecta al texto de las palabras**, no al tema de la interfaz.
 
 ```
 word (token.text)
@@ -87,13 +87,13 @@ WordDisplay / TraditionalView  (style.color)
 
 | Archivo | Rol |
 |---------|-----|
-| `data/colornames.json` | Subset local `{ hexCode, name }` (~130); CC0 |
+| `data/colornames.json` | Subset local `{ hexCode, name }` (180 colores con contraste ≥ 3:1 sobre fondo claro y oscuro); MIT |
 | `utils/color-theme.ts` | `getColorForWord`, `lookupColorName`, `colorHex` |
 | `WordDisplay.tsx` | RSVP/Bionic/Híbrido; etiqueta opcional bajo palabra |
 | `TraditionalView.tsx` | Color por `<span>`; `title` con nombre del color |
 | `SettingsDrawer.tsx` | Toggles `wordColorNames`, `showWordColorNames` |
 
-**No** se llama a `colornames.org` desde el navegador (CORS + offline PWA). Para ampliar la paleta: regenerar JSON en build desde el CSV oficial.
+**No** se descarga nada en runtime (offline PWA). Para ampliar la paleta: regenerar el JSON desde `color-name-list` manteniendo el criterio de contraste.
 
 ## Parsers
 
@@ -122,18 +122,17 @@ Datos **por navegador** — sin sync en nube.
 
 - `vite-plugin-pwa` + Workbox precache.
 - Tras deploy: hard refresh puede ser necesario.
-- `manifest.webmanifest` puede dar 401 con Basic Auth (inofensivo).
 
 ## Build y chunks
 
 `vite.config.ts`: `epub`, `pdf`, `vendor` (react, zustand, dexie).  
-`theme_color`: `#0a0a09`.
+`theme_color`: `#121214`.
 
 ## Despliegue
 
 ```
-/home/apps/lector/lector-app/dist  →  Caddy file_server
-read.otrasmaneras.com         →  basic_auth + try_files /index.html
+dist/                  →  hosting estático (file_server)
+reader.280642.xyz      →  público + try_files /index.html
 ```
 
 [OPERACIONES.md](OPERACIONES.md)

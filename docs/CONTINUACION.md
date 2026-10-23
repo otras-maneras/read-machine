@@ -1,6 +1,6 @@
-# Continuación de sesión — Lector
+# Continuación de sesión — Read Machine (Lector)
 
-**Última actualización:** 3 julio 2026  
+**Última actualización:** 23 octubre 2026  
 **Propósito:** todo lo que un agente o desarrollador necesita para retomar el proyecto sin leer el historial del chat.
 
 ---
@@ -17,9 +17,11 @@ Lector es una **SPA de lectura rápida** desplegada en producción. Funcional y 
 | Biblioteca estilo Apple Books | ✅ Implementado |
 | Import ePub / PDF / TXT / MD / paste | ✅ Funcional |
 | IndexedDB + progreso + marcadores | ✅ Funcional |
-| PWA + Basic Auth | ✅ En producción |
-| Palabras con color (colornames) | ✅ Implementado (dataset local) |
-| Git en `lector-app` | ❌ **No inicializado** (solo `.gitignore`) |
+| PWA pública (sin login) | ✅ En producción |
+| Biblioteca abierta (dominio público) | ✅ `public/libros/` + `services/catalog.ts` |
+| Rediseño estilo otrasmaneras | ✅ Barra de sistema, ventanas, controles nativos (`components/ui/`) |
+| Palabras con color | ✅ Implementado (dataset local, color-name-list MIT) |
+| Git | ✅ https://github.com/otras-maneras/read-machine |
 | Pretext (layout de texto) | ❌ **Evaluado, no integrar por ahora** |
 
 ---
@@ -27,20 +29,15 @@ Lector es una **SPA de lectura rápida** desplegada en producción. Funcional y 
 ## Acceso rápido
 
 ```bash
-cd /home/apps/lector/lector-app
-npm run dev          # http://localhost:5173 (sin auth)
-npm run build        # verificar antes de deploy
-./deploy.sh          # producción
+npm run dev          # http://localhost:5173
+npm run build        # verificar antes de publicar
+./deploy.sh          # build de producción (dist/)
 ```
 
 | Item | Valor |
 |------|-------|
-| URL prod | https://read.otrasmaneras.com |
-| Auth | HTTP Basic — usuario `lector`, contraseña en `/home/apps/lector/lector-app/.auth-credentials` |
-| Build output | `/home/apps/lector/lector-app/dist` |
-| Caddy | `/etc/caddy/Caddyfile` → bloque `read.otrasmaneras.com` |
-
-**No commitear** `.auth-credentials`. Plantilla: `.auth-credentials.example`.
+| URL prod | https://reader.280642.xyz (pública) |
+| Build output | `dist/` (sitio estático; ver OPERACIONES.md) |
 
 ---
 
@@ -49,10 +46,10 @@ npm run build        # verificar antes de deploy
 ### Fase 1 — MVP
 - App completa: biblioteca, import, RSVP, Bionic, Híbrido, scroll, IndexedDB, PWA, marcadores, estadísticas.
 - Persistencia local; archivo fuente opcional en import.
-- Basic Auth en Caddy.
+- Acceso con Basic Auth (retirado el 2026-10-23: ahora es pública).
 
 ### Fase 2 — UI y UX
-- Estética inspirada en `/home/encargado-app` (DM Sans + paneles `.ot-*`).
+- Estética de paneles `.ot-*` con DM Sans (reemplazada en octubre 2026 por el estilo de otrasmaneras: Inter + clases `rm-*`).
 - Temas: `dark`, `light`, `sepia`, `paper`.
 - Tipografía de lectura: **Georgia** (`.reading-text`).
 - ControlBar compacta (2 filas); botón Biblioteca fijo en cabecera.
@@ -73,10 +70,10 @@ Varios bugs hacían que capítulos se repitieran o el play no avanzara:
 4. **Doble tarjeta de capítulo** — overlay manual en selector + motor. Solución: solo el motor muestra tarjeta; no overlay al cambiar capítulo en `<select>`.
 5. **Capítulos ePub con mismo título** — sufijo `· N` en `epub-parser.ts`.
 
-### Fase 5 — Palabras con color (colornames)
-- Integración con [colornames.org](https://colornames.org/): cada **palabra** del libro puede mostrarse en un color asociado.
+### Fase 5 — Palabras con color
+- Nombres de color de [color-name-list](https://github.com/meodai/color-name-list) (MIT, David Aerne) (antes colornames.org, reemplazado en octubre 2026 por licencia): cada **palabra** del libro puede mostrarse en un color asociado.
 - **No** cambia el tema de la interfaz (fondo, menús, etc.) — solo el color del texto de las palabras.
-- Dataset local `src/data/colornames.json` (~130 entradas `hexCode` + `name`); sin llamadas a la API en runtime (CORS + PWA offline).
+- Dataset local `src/data/colornames.json` (180 entradas `hexCode` + `name`); sin llamadas en runtime (PWA offline).
 - Lógica en `utils/color-theme.ts`:
   - Si la palabra coincide con un token de un nombre de color → ese color.
   - Si no → hash estable de la palabra → índice en el JSON.
@@ -111,12 +108,11 @@ src/
 │   └── library/LibraryView.tsx # Apple Books layout
 ├── parsers/epub-parser.ts      # spine.get(i); títulos deduplicados
 ├── storage/db.ts               # Dexie v3
-└── index.css                   # Temas + .ot-* + .reading-text
+└── index.css                   # Temas + clases rm-* (estilo otrasmaneras) + .reading-text
 
 AGENTS.md                         # Entrada para agentes
 docs/CONTINUACION.md              # Este archivo
-deploy.sh                         # build + restart caddy
-.auth-credentials                 # Secretos (servidor)
+deploy.sh                         # build de producción
 ```
 
 ---
@@ -165,10 +161,10 @@ deploy.sh                         # build + restart caddy
 1. **Sin backend** — IndexedDB only.
 2. **ETA por palabras**, no por modo visual (RSVP y Bionic recorren las mismas palabras).
 3. **RSVP/Híbrido = 1 palabra**; Bionic puede agrupar (`bionicWordsPerChunk`).
-4. **Georgia** para texto del libro; DM Sans para UI.
+4. **Georgia** para texto del libro; Inter para UI.
 5. **Pretext** (`@chenglou/pretext`) — útil solo para scroll virtualizado futuro; **no integrar ahora**.
-6. **Colornames** — colorear palabras, no UI; dataset embebido, sin `fetch` a colornames.org en producción.
-7. **No tocar** otros bloques de `/etc/caddy/Caddyfile`.
+6. **Colores por palabra** — colorear palabras, no UI; dataset embebido, sin `fetch` en producción.
+7. La app es solo estática: no depende de configuración de servidor más allá de servir `dist/`.
 
 ---
 
@@ -188,7 +184,7 @@ deploy.sh                         # build + restart caddy
 1. Leer este doc + `AGENTS.md`.
 2. `npm run build` — debe pasar.
 3. Probar en prod o dev:
-   - Import ePub (`/home/apps/lector/shirah-reader/assets/alice.epub`)
+   - Abrir un libro de «Biblioteca abierta» o importar un ePub de `public/libros/`
    - RSVP play → cruzar capítulo → tarjeta → continúa
    - Selector de capítulo → ▶ empieza
    - Scroll → tap palabra → «Lectura rápida desde aquí»
@@ -197,15 +193,14 @@ deploy.sh                         # build + restart caddy
 
 ---
 
-## Referencias en el servidor
+## Referencias
 
-| Ruta | Uso |
-|------|-----|
-| `/home/encargado-app` | Referencia UI (AGENTS.md, estilos) |
-| `/home/apps/lector/dashreader` | RSVP original |
-| `/home/apps/lector/shirah-reader` | ePub + alice.epub de prueba |
-| `/home/apps/lector/bionic-for-zotero` | Bionic reading |
-| `/home/apps/lector/smartReader` | Otra referencia |
+| Proyecto | Uso |
+|----------|-----|
+| [otrasmaneras.com](https://otrasmaneras.com) | Estética de la interfaz |
+| [dashreader](https://github.com/inattendu/dashreader) (MIT) | Inspiración del motor RSVP |
+| [bionic-for-zotero](https://github.com/windingwind/bionic-for-zotero) | Referencia de Bionic reading (no se copió código) |
+| [color-name-list](https://github.com/meodai/color-name-list) (MIT) | Nombres de colores |
 
 ---
 
@@ -217,5 +212,5 @@ deploy.sh                         # build + restart caddy
 | [ARQUITECTURA.md](ARQUITECTURA.md) | Stack, flujo, IndexedDB |
 | [DESARROLLO.md](DESARROLLO.md) | Patrones, convenciones, checklist |
 | [MODOS-LECTURA.md](MODOS-LECTURA.md) | RSVP, scroll, atajos |
-| [OPERACIONES.md](OPERACIONES.md) | Deploy, Caddy, troubleshooting |
+| [OPERACIONES.md](OPERACIONES.md) | Build, publicación, troubleshooting |
 | [SEGURIDAD.md](SEGURIDAD.md) | Auth, secretos, datos locales |

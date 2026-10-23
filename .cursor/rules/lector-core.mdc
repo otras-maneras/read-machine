@@ -9,11 +9,10 @@ alwaysApply: true
 - SPA sin backend: Dexie + Zustand (`reader-store.ts`).
 - **Capítulos:** `tokens[]` global + `utils/chapter-offsets.ts`. No recontar palabras en scroll.
 - **RSVP overlay:** no `engine.pause()` en cleanup de effects con `chapterOverlay` activo.
-- UI = DM Sans; libro = Georgia (`.reading-text`).
+- UI = Inter (estilo otrasmaneras, clases `rm-*`); libro = Georgia (`.reading-text`).
 - RSVP/Híbrido = 1 palabra; Bionic = bloques (`bionicWordsPerChunk`).
 - ETA = palabras / WPM (`utils/reading-time.ts`).
 - ePub: `book.spine.get(i)`.
 - **Colornames:** colorear palabras (`wordColorNames`), no la interfaz; `data/colornames.json` + `utils/color-theme.ts`; sin API en runtime.
-- Auth: `.auth-credentials` en servidor — no commitear.
 - Pretext: no integrar sin acuerdo.
-- Deploy: `npm run build` + `./deploy.sh`.
+- Deploy: `npm run build` (o `./deploy.sh`).

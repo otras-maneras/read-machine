@@ -1,15 +1,13 @@
 ---
-description: Deploy, Caddy, auth y operaciones
+description: Build, publicación y operaciones
 globs: deploy.sh,vite.config.ts,docs/OPERACIONES.md,docs/SEGURIDAD.md,docs/CONTINUACION.md
 alwaysApply: false
 ---
 
-# Deploy y operaciones
+# Build y operaciones
 
-- Prod: https://read.otrasmaneras.com → `/home/apps/lector/lector-app/dist`
-- Auth: Basic; usuario `lector`; pass en `.auth-credentials` (servidor)
-- `./deploy.sh` = build + `systemctl restart caddy`
-- PWA: hard refresh tras deploy
-- Git: no inicializado en lector-app aún
-- ePub prueba: `/home/apps/lector/shirah-reader/assets/alice.epub`
+- Prod: https://reader.280642.xyz (pública, sin login) — sirve `dist/` como estático
+- `./deploy.sh` = `npm run build`
+- PWA: hard refresh tras publicar
+- ePub de prueba: `public/libros/*.epub` (dominio público)
 - Handoff: `docs/CONTINUACION.md`
