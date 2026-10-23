@@ -1,18 +1,11 @@
 #!/usr/bin/env bash
-# Deploy Lector → https://read.otrasmaneras.com
-# Ver docs/OPERACIONES.md
+# Build de producción de Read Machine. El resultado (dist/) se sirve como sitio
+# estático; ver docs/OPERACIONES.md.
 set -euo pipefail
 
-APP_DIR="/home/apps/lector/lector-app"
-cd "$APP_DIR"
+cd "$(dirname "$0")"
 
-echo "→ Building lector-app..."
+echo "→ Build..."
 npm run build
 
-echo "→ Reloading Caddy..."
-caddy validate --config /etc/caddy/Caddyfile
-systemctl restart caddy
-sleep 2
-systemctl is-active --quiet caddy
-
-echo "✓ Deployed to https://read.otrasmaneras.com"
+echo "✓ Listo: dist/ actualizado"

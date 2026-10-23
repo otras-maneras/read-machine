@@ -202,7 +202,7 @@ export function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
 
         <Section
           title="Palabras con color"
-          note="Cada palabra toma un color de colornames.org: si coincide con el nombre de un color se usa ese; si no, uno fijo según la palabra."
+          note="Cada palabra toma un color con nombre (de color-name-list): si coincide con el nombre de un color se usa ese; si no, uno fijo según la palabra."
         >
           <SwitchRow
             label="Colorear palabras"

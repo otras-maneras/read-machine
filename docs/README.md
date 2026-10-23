@@ -18,7 +18,7 @@
 | [DESARROLLO.md](DESARROLLO.md) | Convenciones, trampas, checklist |
 | [MODOS-LECTURA.md](MODOS-LECTURA.md) | RSVP, Bionic, scroll, capítulos, colornames |
 | [OPERACIONES.md](OPERACIONES.md) | Deploy, auth, troubleshooting |
-| [SEGURIDAD.md](SEGURIDAD.md) | Secretos, Basic Auth, datos locales |
+| [SEGURIDAD.md](SEGURIDAD.md) | Secretos, acceso público, datos locales |
 
 ## Assets
 
@@ -31,4 +31,4 @@ Reglas persistentes en `../.cursor/rules/`:
 - `lector-core.mdc` — siempre activa
 - `engines.mdc` — motores y parsers
 - `ui-reader.mdc` — componentes y estilos
-- `deploy-ops.mdc` — deploy y Caddy
+- `deploy-ops.mdc` — build y publicación

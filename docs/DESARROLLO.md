@@ -67,10 +67,10 @@ const item = spine[i];             // ❌ crash
 
 | Capa | Fuente | Clases |
 |------|--------|--------|
-| Chrome | DM Sans | `.ot-panel`, `.ot-btn`, … |
+| Chrome | Inter | `.rm-window`, `.rm-seg`, `.rm-pill`, `.rm-switch`, … (`index.css`, estilo otrasmaneras) |
 | Libro | Georgia | `.reading-text` |
 
-Temas de **interfaz**: `dark` | `paper` | `sepia` | `light` → `body.theme-{name}`.
+Temas de **interfaz**: `light` | `dark` (paleta de otrasmaneras) y `paper` | `sepia` (de lectura) → `body.theme-{name}`.
 
 Colores de **palabras** (opcional): `wordColorNames` → `utils/color-theme.ts` + `data/colornames.json`. No mezclar con variables `--color-reader-*` del tema.
 
@@ -78,10 +78,10 @@ Colores de **palabras** (opcional): `wordColorNames` → `utils/color-theme.ts` 
 
 Extender `types.ts` → `DEFAULT_PREFERENCES` → `db.loadPreferences()` (merge con `??`) → `SettingsDrawer` → componentes que consuman la pref.
 
-### Colornames
+### Colores por palabra
 
 - Dataset embebido; no `fetch` a la API en runtime.
-- Para más colores: script de build que extraiga top N del CSV CC0 de colornames.org.
+- Para más colores: regenerar desde `color-name-list` (MIT) filtrando por contraste contra ambos fondos.
 - `getColorForWord(word)` debe ser determinista (misma palabra → mismo color).
 
 ### Mobile

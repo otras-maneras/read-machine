@@ -13,17 +13,16 @@ Webapp de lectura rápida: **RSVP**, **Bionic**, **Híbrido**, **scroll**, impor
 - **Biblioteca abierta:** clásicos en español de dominio público en `public/libros/` (`catalogo.json` + ePub + portadas); se abren con un clic y quedan en la biblioteca local
 - Biblioteca UI estilo Apple Books («Leyendo ahora» + rejilla de portadas)
 - PWA instalable, sin backend
-- Temas de interfaz: oscuro, papel, sepia, claro
-- **Palabras con color** (colornames.org): cada palabra puede mostrarse en un color asociado, con nombre opcional
+- Interfaz con el estilo de [otrasmaneras.com](https://otrasmaneras.com): temas claro y oscuro, más papel y sepia para leer
+- **Palabras con color**: cada palabra puede mostrarse en un color asociado, con nombre opcional
 
 ## Inicio rápido
 
 ```bash
-cd /home/apps/lector/lector-app
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # salida en dist/
-./deploy.sh      # producción
+./deploy.sh      # build de producción
 ```
 
 ## Scripts
@@ -34,7 +33,7 @@ npm run build    # salida en dist/
 | `npm run build` | TypeScript + build producción |
 | `npm run preview` | Previsualizar `dist/` |
 | `npm run lint` | Oxlint |
-| `./deploy.sh` | Deploy a read.otrasmaneras.com |
+| `./deploy.sh` | Build de producción (`dist/`, sitio estático) |
 
 ## Documentación
 
@@ -47,3 +46,15 @@ npm run build    # salida en dist/
 ## Stack
 
 Vite · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Dexie · epubjs · pdfjs-dist · vite-plugin-pwa
+
+## Créditos
+
+- Textos de la biblioteca abierta: obras de dominio público, de [Project Gutenberg](https://www.gutenberg.org/).
+- Nombres de color: [color-name-list](https://github.com/meodai/color-name-list) de David Aerne (MIT).
+- Motor RSVP inspirado en [dashreader](https://github.com/inattendu/dashreader) (MIT).
+- Lectura de ePub y PDF: [epub.js](https://github.com/futurepress/epub.js) y [PDF.js](https://github.com/mozilla/pdf.js).
+
+## Licencia
+
+[MIT](LICENSE) © 2026 Otras Maneras. Los libros de `public/libros/` son de dominio público.
+
