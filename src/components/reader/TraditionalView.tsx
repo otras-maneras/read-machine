@@ -8,6 +8,7 @@ import {
 import type { Token } from '../../engines/types';
 import { useReaderStore } from '../../stores/reader-store';
 import { colorHex, getColorForWord } from '../../utils/color-theme';
+import { Icon } from '../ui/Icon';
 
 interface WordSpan {
   text: string;
@@ -149,7 +150,7 @@ export function TraditionalView() {
         style={{ fontSize: preferences.scrollFontSize, lineHeight: 1.85 }}
       >
         {showChapterHeading && (
-          <h2 className="mb-6 text-lg font-bold text-reader-muted">{chapter.title}</h2>
+          <h2 className="mb-6 font-[family-name:var(--font-ui)] text-xs font-medium uppercase tracking-[0.08em] text-reader-muted">{chapter.title}</h2>
         )}
 
         {paragraphs.map((para) => (
@@ -189,13 +190,13 @@ export function TraditionalView() {
           <button
             type="button"
             onClick={handleStartRsvp}
-            className="pointer-events-auto flex items-center gap-2 rounded-full border border-reader-border bg-reader-surface px-5 py-3 text-sm font-bold text-reader-text shadow-xl shadow-black/30 transition-transform active:scale-[0.98]"
+            className="rm-window pointer-events-auto flex items-center gap-3 rounded-full py-2 pl-2 pr-5 text-sm text-reader-text transition-transform active:scale-[0.98]"
           >
             <span
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-reader-accent text-base text-white"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-reader-text text-reader-bg [&_svg]:h-4 [&_svg]:w-4"
               aria-hidden
             >
-              ▶
+              <Icon name="play" />
             </span>
             Lectura rápida desde aquí
           </button>

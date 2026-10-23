@@ -41,51 +41,46 @@ export function ProgressBar({
       : [];
 
   return (
-    <div className="px-3 pt-1">
-      <div className="rounded-xl border border-reader-border bg-reader-surface/70 px-3 py-2 backdrop-blur-sm">
-        {!compact && (
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[11px] text-reader-muted">
-            <span className="font-bold tabular-nums text-reader-text">
-              {formatProgressPercent(wordIndex + 1, tokens.length)}
-            </span>
-            <span className="tabular-nums">
+    <div className="px-4 pb-1 sm:px-5">
+      <div className="relative h-[3px] rounded-full bg-reader-border">
+        {markers.map((left, i) => (
+          <span
+            key={i}
+            className="absolute -top-[2px] h-[7px] w-px bg-reader-muted/50"
+            style={{ left: `${left}%` }}
+          />
+        ))}
+        <div
+          className="h-full rounded-full bg-reader-accent transition-[width] duration-200 ease-out"
+          style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+          role="progressbar"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        />
+      </div>
+
+      <div className="mt-2 flex items-center justify-between gap-3 text-[11px] tabular-nums text-reader-muted">
+        <span>
+          <span className="text-reader-text">
+            {formatProgressPercent(wordIndex + 1, tokens.length)}
+          </span>
+          {!compact && (
+            <span className="hidden sm:inline">
+              {' · '}
               {(wordIndex + 1).toLocaleString()} / {tokens.length.toLocaleString()}
             </span>
-            <span>
-              Libro <span className="text-reader-text">{bookEta}</span>
-            </span>
-            {chapterOffsets.length > 1 && (
-              <span>
-                Cap. <span className="text-reader-text">{chapterEta}</span>
-              </span>
-            )}
-          </div>
-        )}
-
-        <div className="relative h-2.5 overflow-hidden rounded-full bg-black/10">
-          {markers.map((left, i) => (
-            <span
-              key={i}
-              className="absolute top-0 bottom-0 w-px bg-reader-text/25"
-              style={{ left: `${left}%` }}
-            />
-          ))}
-          <div
-            className="relative h-full rounded-full bg-reader-accent transition-[width] duration-200 ease-out"
-            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-            role="progressbar"
-            aria-valuenow={Math.round(progress)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          />
-        </div>
-
-        {compact && (
-          <div className="mt-1.5 flex items-center justify-between text-[10px] text-reader-muted">
-            <span>{formatProgressPercent(wordIndex + 1, tokens.length)}</span>
-            <span>{bookEta} restantes</span>
-          </div>
-        )}
+          )}
+        </span>
+        <span>
+          {!compact && chapterOffsets.length > 1 && (
+            <>
+              Capítulo <span className="text-reader-text">{chapterEta}</span>
+              {' · '}
+            </>
+          )}
+          Libro <span className="text-reader-text">{bookEta}</span>
+        </span>
       </div>
     </div>
   );

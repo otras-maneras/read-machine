@@ -11,6 +11,8 @@ import { ProgressBar } from './ProgressBar';
 import { ChapterTitleCard } from './ChapterTitleCard';
 import { SettingsDrawer } from '../settings/SettingsDrawer';
 import { BookmarksPanel } from './BookmarksPanel';
+import { SystemBar } from '../ui/SystemBar';
+import { Icon } from '../ui/Icon';
 
 function tokensAtIndex(tokens: Token[], index: number): Token[] {
   const token = tokens[index];
@@ -18,9 +20,9 @@ function tokensAtIndex(tokens: Token[], index: number): Token[] {
 }
 
 const modeLabel = {
-  hybrid: 'Híbrido · 1 palabra',
-  rsvp: 'RSVP · 1 palabra',
-  bionic: 'Bionic · bloques',
+  hybrid: 'Híbrido',
+  rsvp: 'RSVP',
+  bionic: 'Bionic',
 };
 
 export function ReaderView() {
@@ -209,38 +211,32 @@ export function ReaderView() {
     tokens.length > 0 ? ((wordIndex + 1) / tokens.length) * 100 : 0;
 
   return (
-    <div className="reader-grid-bg flex h-[100dvh] min-h-svh flex-col overflow-hidden">
-      <header className="safe-top shrink-0 px-3 pt-2">
-        <div className="ot-panel flex items-center gap-2 px-2.5 py-2 sm:px-3">
+    <div className="flex h-[100dvh] min-h-svh flex-col overflow-hidden">
+      <SystemBar
+        left={
           <button
             type="button"
             onClick={handleEscape}
-            className="ot-btn ot-btn-ghost h-9 shrink-0 gap-1.5 px-2.5"
+            className="rm-bar-btn"
             title="Volver a la biblioteca"
           >
-            <span aria-hidden>←</span>
+            <Icon name="back" />
             <span className="hidden sm:inline">Biblioteca</span>
           </button>
-
-          <div className="min-w-0 flex-1 text-center sm:text-left">
-            <span className="block truncate text-sm font-bold text-reader-text">
-              {bookTitle}
-            </span>
-            <span className="mt-0.5 hidden text-[11px] text-reader-muted sm:block">
-              {readerLayout === 'rsvp'
-                ? modeLabel[preferences.readingMode]
-                : 'Modo scroll'}
-            </span>
-          </div>
-
-          {chapters.length > 1 && (
+        }
+        center={
+          <span className="hidden sm:inline">
+            <span className="text-reader-text">{bookTitle}</span>
+            {' · '}
+            {readerLayout === 'rsvp' ? modeLabel[preferences.readingMode] : 'Página'}
+          </span>
+        }
+        right={
+          chapters.length > 1 && (
             <select
               value={currentChapterIndex}
-              onChange={(e) => {
-                const index = Number(e.target.value);
-                void setChapter(index);
-              }}
-              className="w-32 shrink-0 truncate rounded-lg border border-reader-border bg-reader-bg px-2 py-2 text-xs outline-none sm:w-44"
+              onChange={(e) => void setChapter(Number(e.target.value))}
+              className="rm-select w-36 sm:w-44"
               title="Capítulo"
             >
               {chapters.map((ch, i) => (
@@ -249,27 +245,31 @@ export function ReaderView() {
                 </option>
               ))}
             </select>
-          )}
-        </div>
+          )
+        }
+      />
 
-        {tokens.length > 0 && (
-          <ProgressBar
-            progress={progress}
-            wordIndex={wordIndex}
-            tokens={tokens}
-            wpm={preferences.wpm}
-            mode={preferences.readingMode}
-            chapterOffsets={chapterOffsets}
-            currentChapterIndex={currentChapterIndex}
-            compact={readerLayout === 'scroll'}
-          />
-        )}
-      </header>
+      <p className="truncate px-4 pb-2 text-center text-xs text-reader-text sm:hidden">
+        {bookTitle}
+      </p>
+
+      {tokens.length > 0 && (
+        <ProgressBar
+          progress={progress}
+          wordIndex={wordIndex}
+          tokens={tokens}
+          wpm={preferences.wpm}
+          mode={preferences.readingMode}
+          chapterOffsets={chapterOffsets}
+          currentChapterIndex={currentChapterIndex}
+          compact={readerLayout === 'scroll'}
+        />
+      )}
 
       <main className="relative min-h-0 flex-1 overflow-hidden">
         {tokenizing ? (
           <div className="flex h-full items-center justify-center text-reader-muted">
-            Tokenizando texto…
+            Preparando el texto…
           </div>
         ) : readerLayout === 'scroll' ? (
           <TraditionalView />

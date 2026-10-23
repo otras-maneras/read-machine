@@ -13,14 +13,14 @@ export default function App() {
 
   if (!initialized) {
     return (
-      <div className="flex min-h-svh items-center justify-center text-reader-muted">
+      <div className="flex min-h-svh items-center justify-center text-sm text-reader-muted">
         Cargando…
       </div>
     );
   }
 
   return (
-    <div className="mx-auto min-h-svh w-full max-w-2xl">
+    <div className="min-h-svh w-full">
       {screen === 'library' && <LibraryView />}
       {screen === 'import' && <ImportView />}
       {screen === 'reader' && <ReaderView />}

@@ -1,4 +1,5 @@
 import type { ReaderLayout, ReadingMode } from '../../engines/types';
+import { Icon } from '../ui/Icon';
 
 interface ControlBarProps {
   isPlaying: boolean;
@@ -24,6 +25,12 @@ const MODES: { id: ReadingMode; label: string }[] = [
   { id: 'bionic', label: 'Bionic' },
 ];
 
+const LAYOUTS: { id: ReaderLayout; label: string }[] = [
+  { id: 'rsvp', label: 'Rápida' },
+  { id: 'scroll', label: 'Página' },
+];
+
+/** Dock flotante del lector: vista y modo arriba, reproducción y velocidad abajo. */
 export function ControlBar({
   isPlaying,
   wpm,
@@ -40,39 +47,34 @@ export function ControlBar({
   onFullscreen,
 }: ControlBarProps) {
   return (
-    <div className="border-t border-reader-border bg-reader-bg/90 px-2 py-2 backdrop-blur-xl sm:px-3">
-      <div className="ot-panel mx-auto flex max-w-2xl flex-col gap-2 p-2 sm:p-2.5">
-        {/* Fila 1: vista + modo + utilidades */}
-        <div className="flex items-center gap-2">
-          <div className="flex shrink-0 rounded-lg border border-reader-border bg-reader-bg/50 p-0.5">
-            {(['rsvp', 'scroll'] as ReaderLayout[]).map((item) => (
+    <div className="px-3 pt-2">
+      <div className="rm-window mx-auto flex max-w-2xl flex-col gap-2.5 p-2.5 sm:p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="rm-seg shrink-0" role="group" aria-label="Vista">
+            {LAYOUTS.map((item) => (
               <button
-                key={item}
+                key={item.id}
                 type="button"
-                onClick={() => onLayoutChange(item)}
-                className={`ot-btn px-2.5 py-1.5 capitalize ${
-                  layout === item
-                    ? 'bg-reader-accent text-white shadow-sm'
-                    : 'bg-transparent text-reader-muted hover:text-reader-text'
-                }`}
+                aria-pressed={layout === item.id}
+                onClick={() => onLayoutChange(item.id)}
               >
-                {item}
+                {item.label}
               </button>
             ))}
           </div>
 
           {layout === 'rsvp' && (
-            <div className="flex min-w-0 flex-1 rounded-lg border border-reader-border bg-reader-bg/40 p-0.5">
+            <div
+              className="rm-seg order-last basis-full sm:order-none sm:basis-auto sm:flex-1"
+              role="group"
+              aria-label="Modo de lectura"
+            >
               {MODES.map((m) => (
                 <button
                   key={m.id}
                   type="button"
+                  aria-pressed={mode === m.id}
                   onClick={() => onModeChange(m.id)}
-                  className={`ot-btn flex-1 px-1 py-1.5 ${
-                    mode === m.id
-                      ? 'bg-reader-text text-reader-bg'
-                      : 'bg-transparent text-reader-muted hover:text-reader-text'
-                  }`}
                 >
                   {m.label}
                 </button>
@@ -80,50 +82,56 @@ export function ControlBar({
             </div>
           )}
 
-          {layout === 'scroll' && <div className="flex-1" />}
-
-          <div className="flex shrink-0 gap-1">
-            <button type="button" onClick={onBookmarks} className="ot-btn ot-btn-ghost h-9 w-9 p-0" title="Marcadores">
-              🔖
+          <div className="ml-auto flex shrink-0 gap-0.5">
+            <button type="button" onClick={onBookmarks} className="rm-icon-btn" title="Marcadores">
+              <Icon name="bookmark" />
             </button>
-            <button type="button" onClick={onSettings} className="ot-btn ot-btn-ghost h-9 w-9 p-0" title="Ajustes">
-              ⚙
+            <button type="button" onClick={onSettings} className="rm-icon-btn" title="Ajustes">
+              <Icon name="settings" />
             </button>
-            <button type="button" onClick={onFullscreen} className="ot-btn ot-btn-ghost h-9 w-9 p-0" title="Pantalla completa">
-              ⛶
+            <button
+              type="button"
+              onClick={onFullscreen}
+              className="rm-icon-btn"
+              title="Pantalla completa"
+            >
+              <Icon name="fullscreen" />
             </button>
           </div>
         </div>
 
-        {/* Fila 2 (solo RSVP): transport + WPM */}
         {layout === 'rsvp' && (
-          <div className="flex items-center gap-2">
-            <div className="flex shrink-0 gap-1">
-              <button type="button" onClick={() => onSeek(-10)} className="ot-btn ot-btn-ghost h-11 min-w-11 px-2 text-xs">
-                −10
-              </button>
-            </div>
-
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              type="button"
+              onClick={() => onSeek(-10)}
+              className="rm-icon-btn"
+              title="Atrás 10 palabras"
+            >
+              <Icon name="rewind" />
+            </button>
             <button
               type="button"
               onClick={onTogglePlay}
-              className="ot-btn ot-btn-primary flex h-11 w-14 shrink-0 rounded-xl text-lg"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-reader-text text-reader-bg transition-transform active:scale-95 [&_svg]:h-5 [&_svg]:w-5"
               aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
             >
-              {isPlaying ? '⏸' : '▶'}
+              <Icon name={isPlaying ? 'pause' : 'play'} />
+            </button>
+            <button
+              type="button"
+              onClick={() => onSeek(10)}
+              className="rm-icon-btn"
+              title="Adelante 10 palabras"
+            >
+              <Icon name="forward" />
+            </button>
+            <button type="button" onClick={onRestart} className="rm-icon-btn" title="Desde el principio">
+              <Icon name="restart" />
             </button>
 
-            <div className="flex shrink-0 gap-1">
-              <button type="button" onClick={() => onSeek(10)} className="ot-btn ot-btn-ghost h-11 min-w-11 px-2 text-xs">
-                +10
-              </button>
-              <button type="button" onClick={onRestart} className="ot-btn ot-btn-ghost h-11 min-w-11 px-2" title="Reiniciar">
-                ↺
-              </button>
-            </div>
-
-            <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-reader-border bg-reader-bg/40 px-2.5 py-1.5">
-              <span className="shrink-0 text-[11px] font-bold text-reader-muted">WPM</span>
+            <label className="ml-1 flex min-w-0 flex-1 items-center gap-2.5 sm:ml-2">
+              <span className="rm-label shrink-0">Ppm</span>
               <input
                 type="range"
                 min={100}
@@ -131,12 +139,11 @@ export function ControlBar({
                 step={25}
                 value={wpm}
                 onChange={(e) => onWpmChange(Number(e.target.value))}
-                className="h-8 min-w-0 flex-1 accent-reader-accent"
+                className="rm-range flex-1"
+                aria-label="Palabras por minuto"
               />
-              <span className="w-9 shrink-0 text-right text-[11px] font-bold tabular-nums text-reader-text">
-                {wpm}
-              </span>
-            </div>
+              <span className="w-10 shrink-0 text-right text-xs tabular-nums">{wpm}</span>
+            </label>
           </div>
         )}
       </div>

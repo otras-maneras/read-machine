@@ -13,7 +13,7 @@ export function StatsBanner() {
   if (!stats || stats.sessionsCount === 0) return null;
 
   return (
-    <div className="mx-4 mb-2 rounded-xl border border-reader-border bg-reader-surface/60 px-4 py-2.5 text-xs text-reader-muted sm:mx-0">
+    <div className="-mt-4 mb-10 text-xs tracking-[0.02em] text-reader-muted sm:-mt-6">
       <span className="text-reader-text">{stats.totalWordsRead.toLocaleString()}</span> palabras
       leídas ·{' '}
       <span className="text-reader-text">{formatDuration(stats.totalReadingSeconds)}</span> ·{' '}

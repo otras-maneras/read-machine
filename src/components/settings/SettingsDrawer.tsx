@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
 import type { Theme, UserPreferences } from '../../engines/types';
 import { useReaderStore } from '../../stores/reader-store';
+import { Sheet } from '../ui/Sheet';
 import { StatsSection } from './StatsSection';
 
 interface SettingsDrawerProps {
@@ -8,11 +10,82 @@ interface SettingsDrawerProps {
 }
 
 const THEMES: { id: Theme; label: string }[] = [
+  { id: 'light', label: 'Claro' },
   { id: 'dark', label: 'Oscuro' },
   { id: 'paper', label: 'Papel' },
   { id: 'sepia', label: 'Sepia' },
-  { id: 'light', label: 'Claro' },
 ];
+
+function Section({ title, note, children }: { title: string; note?: ReactNode; children: ReactNode }) {
+  return (
+    <section>
+      <h3 className="rm-label mb-2 px-1">{title}</h3>
+      <div className="rm-group">{children}</div>
+      {note && <p className="mt-2 px-1 text-xs leading-relaxed text-reader-muted">{note}</p>}
+    </section>
+  );
+}
+
+function SwitchRow({
+  label,
+  checked,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label className={`rm-row cursor-pointer ${disabled ? 'opacity-50' : ''}`}>
+      <span>{label}</span>
+      <input
+        type="checkbox"
+        role="switch"
+        className="rm-switch"
+        checked={checked}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+    </label>
+  );
+}
+
+function RangeRow({
+  label,
+  value,
+  display,
+  min,
+  max,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  display?: ReactNode;
+  min: number;
+  max: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="rm-row">
+      <span className="shrink-0">{label}</span>
+      <span className="flex min-w-0 flex-1 items-center justify-end gap-3">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="rm-range w-full max-w-36"
+        />
+        <span className="w-8 shrink-0 text-right text-xs tabular-nums text-reader-muted">
+          {display ?? value}
+        </span>
+      </span>
+    </label>
+  );
+}
 
 export function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
   const { preferences, updatePreferences, setTheme } = useReaderStore();
@@ -28,192 +101,122 @@ export function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-        aria-label="Cerrar ajustes"
-      />
-      <aside className="relative z-10 flex h-full w-full max-w-sm flex-col overflow-y-auto border-l border-reader-border bg-reader-surface shadow-xl">
-        <header className="flex items-center justify-between border-b border-reader-border px-5 py-4">
-          <h2 className="text-base font-bold">Ajustes</h2>
-          <button type="button" onClick={onClose} className="text-reader-muted hover:text-reader-text">
-            ✕
-          </button>
-        </header>
+    <Sheet title="Ajustes" onClose={onClose}>
+      <div className="flex flex-col gap-6 p-4 pb-8">
+        <StatsSection />
 
-        <div className="flex flex-col gap-6 p-5">
-          <StatsSection />
+        <section>
+          <h3 className="rm-label mb-2 px-1">Tema</h3>
+          <div className="rm-seg" role="group" aria-label="Tema">
+            {THEMES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                aria-pressed={preferences.theme === t.id}
+                onClick={() => setTheme(t.id)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </section>
 
-          <section>
-            <h3 className="ot-label mb-3">Tema</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {THEMES.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setTheme(t.id)}
-                  className={`ot-btn py-2 ${
-                    preferences.theme === t.id
-                      ? 'bg-reader-accent text-white'
-                      : 'ot-btn-ghost'
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-          </section>
+        <Section title="Tipografía">
+          <RangeRow
+            label="Lectura rápida"
+            min={28}
+            max={72}
+            value={preferences.fontSize}
+            onChange={(fontSize) => updatePreferences({ fontSize })}
+          />
+          <RangeRow
+            label="Página"
+            min={14}
+            max={28}
+            value={preferences.scrollFontSize}
+            onChange={(scrollFontSize) => updatePreferences({ scrollFontSize })}
+          />
+          <label className="rm-row">
+            <span>Color de la letra de foco</span>
+            <input
+              type="color"
+              value={preferences.orpColor}
+              onChange={(e) => updatePreferences({ orpColor: e.target.value })}
+              className="h-7 w-7 cursor-pointer overflow-hidden rounded-full border-0 bg-transparent p-0 [&::-moz-color-swatch]:rounded-full [&::-webkit-color-swatch]:rounded-full [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch-wrapper]:p-0"
+            />
+          </label>
+        </Section>
 
-          <section>
-            <h3 className="ot-label mb-3">Palabras con color</h3>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={preferences.wordColorNames}
-                onChange={(e) => updatePreferences({ wordColorNames: e.target.checked })}
-              />
-              Colorear palabras con colornames
-            </label>
-            <label className="mt-2 flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={preferences.showWordColorNames}
-                disabled={!preferences.wordColorNames}
-                onChange={(e) => updatePreferences({ showWordColorNames: e.target.checked })}
-              />
-              Mostrar nombre del color
-            </label>
-            <p className="mt-2 text-xs text-reader-muted">
-              Cada palabra usa un color asociado de colornames.org. Si la palabra coincide con un
-              nombre de color, se usa ese; si no, un color estable según la palabra.
-            </p>
-          </section>
+        <Section title="Ritmo">
+          <SwitchRow
+            label="Micropausas en la puntuación"
+            checked={preferences.micropauses.enabled}
+            onChange={(enabled) => updateMicropause({ enabled })}
+          />
+          <SwitchRow
+            label="Arranque lento"
+            checked={preferences.enableSlowStart}
+            onChange={(enableSlowStart) => updatePreferences({ enableSlowStart })}
+          />
+        </Section>
 
-          <section>
-            <h3 className="mb-3 text-sm font-medium text-reader-muted">Tipografía RSVP</h3>
-            <label className="flex items-center justify-between text-sm">
-              Tamaño
-              <input
-                type="range"
-                min={28}
-                max={72}
-                value={preferences.fontSize}
-                onChange={(e) => updatePreferences({ fontSize: Number(e.target.value) })}
-                className="w-36 accent-reader-accent"
-              />
-            </label>
-            <label className="mt-2 flex items-center justify-between text-sm">
-              Scroll
-              <input
-                type="range"
-                min={14}
-                max={28}
-                value={preferences.scrollFontSize}
-                onChange={(e) => updatePreferences({ scrollFontSize: Number(e.target.value) })}
-                className="w-36 accent-reader-accent"
-              />
-            </label>
-          </section>
+        <Section title="Bionic">
+          <RangeRow
+            label="Palabras por pantalla"
+            min={1}
+            max={12}
+            value={preferences.bionicWordsPerChunk}
+            onChange={(bionicWordsPerChunk) => updatePreferences({ bionicWordsPerChunk })}
+          />
+          <RangeRow
+            label="Resaltado"
+            min={30}
+            max={70}
+            value={Math.round(preferences.bionic.ratio * 100)}
+            display={`${Math.round(preferences.bionic.ratio * 100)}%`}
+            onChange={(v) => updateBionic({ ratio: v / 100 })}
+          />
+          <RangeRow
+            label="Contraste"
+            min={1}
+            max={5}
+            value={preferences.bionic.weightContrast}
+            onChange={(weightContrast) => updateBionic({ weightContrast })}
+          />
+          <SwitchRow
+            label="Ajustar a consonantes"
+            checked={preferences.bionic.adjustToConsonant}
+            onChange={(adjustToConsonant) => updateBionic({ adjustToConsonant })}
+          />
+          <SwitchRow
+            label="Regla -ing"
+            checked={preferences.bionic.ingRule}
+            onChange={(ingRule) => updateBionic({ ingRule })}
+          />
+          <SwitchRow
+            label="Bionic en la página"
+            checked={preferences.bionicInScroll}
+            onChange={(bionicInScroll) => updatePreferences({ bionicInScroll })}
+          />
+        </Section>
 
-          <section>
-            <h3 className="mb-3 text-sm font-medium text-reader-muted">Bionic</h3>
-            <label className="flex items-center justify-between text-sm">
-              Palabras por pantalla
-              <input
-                type="range"
-                min={1}
-                max={12}
-                value={preferences.bionicWordsPerChunk}
-                onChange={(e) =>
-                  updatePreferences({ bionicWordsPerChunk: Number(e.target.value) })
-                }
-                className="w-36 accent-reader-accent"
-              />
-            </label>
-            <label className="mt-3 flex items-center justify-between text-sm">
-              Ratio resaltado
-              <input
-                type="range"
-                min={30}
-                max={70}
-                value={Math.round(preferences.bionic.ratio * 100)}
-                onChange={(e) => updateBionic({ ratio: Number(e.target.value) / 100 })}
-                className="w-36 accent-reader-accent"
-              />
-            </label>
-            <label className="mt-2 flex items-center justify-between text-sm">
-              Contraste peso
-              <input
-                type="range"
-                min={1}
-                max={5}
-                value={preferences.bionic.weightContrast}
-                onChange={(e) => updateBionic({ weightContrast: Number(e.target.value) })}
-                className="w-36 accent-reader-accent"
-              />
-            </label>
-            <label className="mt-3 flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={preferences.bionic.adjustToConsonant}
-                onChange={(e) => updateBionic({ adjustToConsonant: e.target.checked })}
-              />
-              Ajustar a consonantes
-            </label>
-            <label className="mt-2 flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={preferences.bionic.ingRule}
-                onChange={(e) => updateBionic({ ingRule: e.target.checked })}
-              />
-              Regla -ing
-            </label>
-            <label className="mt-2 flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={preferences.bionicInScroll}
-                onChange={(e) => updatePreferences({ bionicInScroll: e.target.checked })}
-              />
-              Bionic en modo scroll
-            </label>
-          </section>
-
-          <section>
-            <h3 className="mb-3 text-sm font-medium text-reader-muted">Micropausas</h3>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={preferences.micropauses.enabled}
-                onChange={(e) => updateMicropause({ enabled: e.target.checked })}
-              />
-              Activar micropausas
-            </label>
-            <label className="mt-2 flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={preferences.enableSlowStart}
-                onChange={(e) => updatePreferences({ enableSlowStart: e.target.checked })}
-              />
-              Arranque lento
-            </label>
-          </section>
-
-          <section>
-            <h3 className="mb-3 text-sm font-medium text-reader-muted">ORP</h3>
-            <label className="flex items-center justify-between text-sm">
-              Color
-              <input
-                type="color"
-                value={preferences.orpColor}
-                onChange={(e) => updatePreferences({ orpColor: e.target.value })}
-                className="h-8 w-12 cursor-pointer rounded border-0 bg-transparent"
-              />
-            </label>
-          </section>
-        </div>
-      </aside>
-    </div>
+        <Section
+          title="Palabras con color"
+          note="Cada palabra toma un color de colornames.org: si coincide con el nombre de un color se usa ese; si no, uno fijo según la palabra."
+        >
+          <SwitchRow
+            label="Colorear palabras"
+            checked={preferences.wordColorNames}
+            onChange={(wordColorNames) => updatePreferences({ wordColorNames })}
+          />
+          <SwitchRow
+            label="Mostrar el nombre del color"
+            checked={preferences.showWordColorNames}
+            disabled={!preferences.wordColorNames}
+            onChange={(showWordColorNames) => updatePreferences({ showWordColorNames })}
+          />
+        </Section>
+      </div>
+    </Sheet>
   );
 }

@@ -19,18 +19,20 @@ export function ChapterTitleCard({
     <div className="absolute inset-0 z-20 flex items-center justify-center p-6">
       <button
         type="button"
-        className="absolute inset-0 bg-reader-bg/80 backdrop-blur-sm"
+        className="rm-scrim absolute inset-0 backdrop-blur-sm"
         onClick={onDismiss}
         aria-label="Continuar lectura"
       />
-      <div className="relative z-10 mx-auto w-full max-w-lg rounded-2xl border border-reader-border bg-reader-surface px-6 py-8 text-center shadow-2xl shadow-black/25 sm:px-10 sm:py-10">
-        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-reader-muted">
-          Capítulo {chapterNumber + 1}
-        </p>
-        <h2 className="reading-text mt-4 text-balance text-2xl font-medium leading-snug text-reader-text sm:text-3xl">
-          {shortenTitle(title)}
-        </h2>
-        <p className="mt-6 text-xs text-reader-muted">Toca o pulsa Espacio para continuar</p>
+      <div className="rm-window rm-pop relative z-10 mx-auto w-full max-w-lg overflow-hidden text-center">
+        <div className="rm-win-head">
+          <span>Capítulo {chapterNumber + 1}</span>
+        </div>
+        <div className="px-6 py-9 sm:px-10">
+          <h2 className="reading-text text-balance text-2xl leading-snug text-reader-text sm:text-3xl">
+            {shortenTitle(title)}
+          </h2>
+          <p className="mt-6 text-xs text-reader-muted">Toca o pulsa Espacio para continuar</p>
+        </div>
       </div>
     </div>
   );
